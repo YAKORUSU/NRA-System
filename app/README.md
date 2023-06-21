@@ -1,4 +1,4 @@
-# eq-monitor-wrapper
+# NotificationRaceResults
 
 ## Motivation
 
