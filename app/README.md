@@ -25,8 +25,6 @@
 WebSocket : ws://{$HostName}:8080/ws/connection
 http : http://{$HostName}:8080/　#接続確認用
 ```
-- WebSocket : ws://{$HostName}:8000/ws/connection
-- http : http://{$HostName}:8000/
 
 ### サーバ情報
 
@@ -55,8 +53,41 @@ http : http://{$HostName}:8080/　#接続確認用
 
 ### 技術仕様
 
+- Webブラウザ：Chrome
 - 言語：Pytnon3系
 - フレームワーク：FastAPI
+
+#### Pythonパッケージ
+
+1. Websocket Client
+```console
+$pip install websocket-client
+```
+
+2. beautifulsoup4
+```console
+$pip install bs4
+```
+
+3. Rich
+```console
+$pip install rich
+```
+
+4. Selenium
+```console
+$pip install selenium
+```
+
+5. Starlette
+```console
+$pip install starlette
+```
+
+6. FastAPI
+```console
+$pip install fastapi
+```
 
 ### レース結果通知フロー
 
