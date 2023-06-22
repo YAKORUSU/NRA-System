@@ -61,32 +61,32 @@ http : http://{$HostName}:8080/　#接続確認用
 
 1. Websocket Client
 ```console
-$pip install websocket-client
+$ pip install websocket-client
 ```
 
 2. beautifulsoup4
 ```console
-$pip install bs4
+$ pip install bs4
 ```
 
 3. Rich
 ```console
-$pip install rich
+$ pip install rich
 ```
 
 4. Selenium
 ```console
-$pip install selenium
+$ pip install selenium
 ```
 
 5. Starlette
 ```console
-$pip install starlette
+$ pip install starlette
 ```
 
 6. FastAPI
 ```console
-$pip install fastapi
+$ pip install fastapi
 ```
 
 ### レース結果通知フロー
