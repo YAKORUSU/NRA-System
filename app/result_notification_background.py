@@ -16,15 +16,6 @@ import format_result_nar_race
 
 console = Console()
 pretty.install()
-"""
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(message)s",
-    datefmt="[%X]",
-    handlers=[RichHandler(rich_tracebacks=True)],
-)
-log = logging.getLogger("rich")
-"""
 #chomedriverのパスを指定
 executable_path="./chromedriver.exe"
 #レース結果通知先のwebsocketサーバーのアドレスを指定
@@ -43,12 +34,17 @@ def main():
         driver = webdriver.Chrome(executable_path=executable_path, options=options)
         while True:
             #data = await ws.receive_text()
-            driver.get('https://www.netkeiba.com/')
+            driver.get('https://race.netkeiba.com/top/')
             html = driver.page_source
             soup = bs4.BeautifulSoup(html, 'html.parser')
-            for data in soup.find_all(class_ = "ResultFlash01 flash_item"):
+            result_state = soup.select_one('.Race_State').text
+            print(result_state)
+            for data in soup.find_all(class_ = "ResultFlash01"):
                 try:
                     is_nar = False
+                    #pan class="Race_State"の値が"確定"の場合のみ処理を行う
+                    if not  "確定" in data.text:
+                        continue
                     #aタグの中にあるhref属性を取得
                     href = data.find('a').get('href')
                     #地方競馬の場合は別のリンクを開く
@@ -62,6 +58,7 @@ def main():
                     pass
             #result_raceID_listの重複を取り除く
             result_raceID_list = list(set(result_raceID_list))
+            console.log(result_raceID_list)
             for race_id in result_raceID_list:
                 #通知済みrace_idか判断し、通知済みの場合何もしない
                 if race_id in done_raceID_list:
@@ -101,11 +98,11 @@ def main():
 
                 except:
                     continue
-            time.sleep(60)
+            time.sleep(1)
     except Exception as e:
         driver = webdriver.Chrome(executable_path=executable_path, options=options)
         console.log("LOG_DEBUG", '{}:{}'.format(type(e),e))
-        time.sleep(60)
+        time.sleep(1)
 
 if __name__ == "__main__":
     main()
