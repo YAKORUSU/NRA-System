@@ -1,4 +1,4 @@
-# NRJ-System
+# NRA-System
 Neos競馬場関連システムの統合管理
 
 ## ファイルの内容
