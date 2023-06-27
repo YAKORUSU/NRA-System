@@ -26,7 +26,7 @@ Google Chrome 86.0.4240.75
 ```
 - ChromeDriver
 
-Python3-Seleniumをダウンロードすると一緒にインストールされる\n
+Python3-Seleniumをダウンロードすると一緒にインストールされる
 
 バージョン確認
 ```Shell
@@ -34,9 +34,9 @@ Python3-Seleniumをダウンロードすると一緒にインストールされ�
 $ chromedriver -v
 ChromeDriver 85.0.4183.121 (a81aa729a8e1fd413943a339393c82e7b8055ddc-refs/branch-heads/4183@{#1864})
 ```
-一致していれば現状のままでOK\n
+一致していれば現状のままでOK
 
-一致していない場合の対処
+※一致していない場合の対処について
 ```Shell
 #zipファイルを扱うためのツールをインストール
 $ sudo apt install unzip
