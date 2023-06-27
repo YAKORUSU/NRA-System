@@ -1,13 +1,10 @@
 from ast import While
 from selenium import webdriver
-from time import sleep
 from selenium.webdriver.chrome.options import Options
 import requests,bs4
-from rich import print,logging,pretty,inspect
+from rich import print,pretty
 from rich.console import Console
-import logging
-from rich.logging import RichHandler
-from fastapi import FastAPI, Body
+
 import time 
 import websocket
 
