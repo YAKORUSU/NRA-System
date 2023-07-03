@@ -1,17 +1,17 @@
-from ast import While
-from selenium import webdriver
-from time import sleep
-from selenium.webdriver.chrome.options import Options
-import requests,bs4
-from rich import print,logging,pretty,inspect
+from rich import pretty
 from rich.console import Console
-import logging
-from rich.logging import RichHandler
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, WebSocket
 from starlette.websockets import WebSocket
-import format_result_race
+from pydantic import BaseModel
+from fastapi.responses import FileResponse
+import azure.cognitiveservices.speech as speechsdk
 import format_result_nar_race
+import format_result_race
 import getRaceInfo
+import urllib.parse
+import tempfile
+
+
 console = Console()
 pretty.install()
 """
