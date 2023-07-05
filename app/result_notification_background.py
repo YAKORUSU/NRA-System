@@ -1,10 +1,17 @@
+# Description: レース結果を取得し、結果が確定したらwebsocketで通知する
+# 起動コマンド：nohup python3 -u result_notification_background.py > result_notification_background.log 2>&1 &
+
+
 from ast import While
 from selenium import webdriver
+from time import sleep
 from selenium.webdriver.chrome.options import Options
 import requests,bs4
-from rich import print,pretty
+from rich import print,logging,pretty,inspect
 from rich.console import Console
-
+import logging
+from rich.logging import RichHandler
+from fastapi import FastAPI, Body
 import time 
 import websocket
 
