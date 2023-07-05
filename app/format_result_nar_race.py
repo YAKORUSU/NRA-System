@@ -1,3 +1,7 @@
+# Description: レース結果を取得し、結果が確定したらwebsocketで通知する
+# 起動コマンド：nohup python3 -u result_notification_background.py > result_notification_background.log 2>&1 &
+
+
 import requests,bs4
 from rich import print,logging,pretty,inspect
 from rich.console import Console
