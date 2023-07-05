@@ -1,3 +1,4 @@
+from typing import List
 import requests,bs4
 from rich import print,logging,pretty,inspect
 from rich.console import Console
@@ -5,7 +6,7 @@ from rich.console import Console
 console = Console()
 pretty.install()
 
-def race_info(url:str)->list[str]:
+def race_info(url:str) -> List[str]:
     html = requests.get(url)
     soup = bs4.BeautifulSoup(html.content, 'html.parser')
     race_num = soup.find_all(class_ = "RaceNum")[0].text.replace("\n","")
@@ -21,6 +22,7 @@ def format_result_race(url:str)->str:
     html = requests.get(url)
     soup = bs4.BeautifulSoup(html.content, 'html.parser')
     result = soup.find_all(class_ = "FullWrap")
+    race_id = url.split("=")[1]
     #レース情報の取得
     info = race_info(url)
     #単勝の結果取得
@@ -78,7 +80,10 @@ def format_result_race(url:str)->str:
     format_payout_text = f"払い戻し:単勝:{tansho_result},{tansho_payout},複勝:{fukusho_result},{fukusho_payout},枠連:{wakuren_result},{wakuren_payout},馬連:{umaren_result},{umaren_payout},ワイド:{wide_result},{wide_payout},馬単:{umatan_result},{umatan_payout},三連複:{sanrenfuku_result},{sanrenfuku_payout},三連単:{sanrentan_result},{sanrentan_payout}"
     format_payout_text = format_payout_text.replace("'", "")
     format_info_text = f"レース場:{info[0]},レース:{info[1]},レース名:{info[2]},出走:{info[3]},距離:{info[4]},天気:{info[5]},馬場:{info[6]}"
-    format_text = f"{format_info_text},{format_payout_text}"
+    #レースID
+    format_race_id = f"race_id:{race_id}"
+    format_race_id = format_race_id.replace("&rf=race_submenu", "")
+    format_text = f"{format_info_text},{format_payout_text},{format_race_id}"
     #console.log(format_text)
     return format_text
 
