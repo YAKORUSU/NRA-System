@@ -62,6 +62,12 @@ def result_info(date:str):
     except:
         return "error"
     return race_list
+
+@app.get("/baken/{race_id}") #race_idはレースID
+async def result_info(race_id:str):
+    url = f"https://race.netkeiba.com/race/result.html?race_id={race_id}"
+    # 使用する変換スクリプト｛baken_list.py}
+    return baken_list.horse_list(url)
     
 @app.get("/synthesize/{textrequest}")
 async def synthesize_text(textrequest:str):
