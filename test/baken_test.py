@@ -1,28 +1,42 @@
 from bs4 import BeautifulSoup
-import json
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from rich import print,pretty
+from rich import print, pretty
 from rich.console import Console
-
-
 
 console = Console()
 pretty.install()
-#chomedriverのパスを指定
-executable_path="./chromedriver.exe"
+# chromedriverのパスを指定
+executable_path = "./chromedriver.exe"
 
-result_raceID_list = []
-done_raceID_list = []
-result_raceID_dict = {}
 options = Options()
-options.add_argument('--headless')
+options.add_argument('--headless')  # ヘッドレスモードで起動
+options.add_argument('--disable-gpu')  # GPUの無効化
+options.add_argument('--no-sandbox')  # サンドボックスモードの無効化
+options.add_argument('--disable-dev-shm-usage')  # 共有メモリの無効化
 
-def get_race_result(url):
-    # HTMLを取得
-    driver = webdriver.Chrome(executable_path=executable_path, options=options)
-    driver.get(url)
-    html = driver.page_source
+
+def horse_list(url):
+    # WebDriverの初期化
+    with webdriver.Chrome(executable_path=executable_path, options=options) as driver:
+            # URLをブロック（定義したURLをブロックする）
+        driver.execute_cdp_cmd('Network.setBlockedURLs', {
+            'urls': [
+                #ここにブロックするURLを追加
+                'https://ads.stickyadstv.com/',
+                'https://c.amazon-adsystem.com/',
+                'https://images.taboola.com/',
+                'https://imageproxy.as.criteo.net/',
+                'https://hk-wf.taboola.com/',
+                'https://gum.criteo.com/',
+                'https://s.adroll.com/',
+                'https://s0.2mdn.net',
+
+            ]})
+
+        # HTMLを取得
+        driver.get(url)
+        html = driver.page_source
 
     # BeautifulSoupを使用してHTMLを解析
     soup = BeautifulSoup(html, 'html.parser', from_encoding='UTF-8')
@@ -32,28 +46,33 @@ def get_race_result(url):
 
     # 表のデータを抽出してJson形式に整形
     table = soup.find('tbody')
-    rows = table.find_all('tr', class_='HorseList') # ヘッダー行を除外
-    result = {}
-    result['raceid'] = race_id
-    result['main'] = []
+    rows = table.find_all('tr', class_='HorseList')
+    result = {
+        'raceid': race_id,
+        'main': {}
+    }
     for row in rows:
         columns = row.find_all('td')
-        number = int(columns[1].text.strip())
-        horse_name = str(columns[3].text.strip())
+        number = columns[1].text.strip()
+        horse_name = columns[3].text.strip()
         frame = int(columns[0].text.strip())
         odds = float(columns[9].text.strip())
+        ninki = int(columns[10].text.strip())
 
         result['main'][number] = {
             '馬名': horse_name,
             '枠': frame,
-            'オッズ': odds
+            'オッズ': odds,
+            '人気': ninki
         }
 
-    response_json = f"{result}"
+    response_json = f'{result}'
 
     return response_json
 
+
+
 # テスト実行
-url = 'https://race.netkeiba.com/race/shutuba.html?race_id=202303020411'
-ubi = get_race_result(url)
-print(ubi)
+url = 'https://race.netkeiba.com/race/shutuba.html?race_id=202303020611'
+race_result = horse_list(url)
+print(race_result)
