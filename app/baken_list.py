@@ -18,6 +18,21 @@ options.add_argument('--disable-dev-shm-usage')  # 共有メモリの無効化
 def horse_list(url):
     # WebDriverの初期化
     with webdriver.Chrome(executable_path=executable_path, options=options) as driver:
+        # URLをブロック（定義したURLをブロックする）
+        driver.execute_cdp_cmd('Network.setBlockedURLs', {
+            'urls': [
+                #ここにブロックするURLを追加
+                'https://ads.stickyadstv.com/',
+                'https://c.amazon-adsystem.com/',
+                'https://images.taboola.com/',
+                'https://imageproxy.as.criteo.net/',
+                'https://hk-wf.taboola.com/',
+                'https://gum.criteo.com/',
+                'https://s.adroll.com/',
+                'https://s0.2mdn.net',
+
+            ]})
+
         # HTMLを取得
         driver.get(url)
         html = driver.page_source
