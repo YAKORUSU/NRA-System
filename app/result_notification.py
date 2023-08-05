@@ -88,6 +88,12 @@ async def result_info(race_id:str):
     # 使用する変換スクリプト｛baken_list.py}
     return baken_list.horse_list(url)
 
+@app.get("/nar_baken/{race_id}") #race_idはレースID
+async def result_info(race_id:str):
+    url = f"https://nar.netkeiba.com/race/shutuba.html?race_id=={race_id}"
+    # 使用する変換スクリプト｛baken_list.py}
+    return baken_list.nar_horse_list(url)
+
 @app.get("/synthesize/{textrequest}")
 async def synthesize_text(textrequest:str):
 
