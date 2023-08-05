@@ -56,6 +56,8 @@ def getRaceInfo(date:str) -> str:
     race_place_list = race_place_list[0].find_all(class_ = "cell")
     race_info_text = "中央:"
     for race_place in race_place_list:
+        if race_place.text == "":
+            continue
         race_place_info = race_place.find_all(class_ = "main")[0].text
         race_info_text += "[レース場:"+race_place_info+","
         #console.log(race_place_info)
@@ -110,4 +112,4 @@ def getRaceInfoNar(date:str) -> str:
     return race_info_text
 
 if __name__ == "__main__":
-    console.log(getRaceInfo("2022/05/29"))
+    console.log(getRaceInfo("2023/08/06"))
