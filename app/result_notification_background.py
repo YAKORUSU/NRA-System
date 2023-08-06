@@ -1,19 +1,13 @@
 # Description: レース結果を取得し、結果が確定したらwebsocketで通知する
 # 起動コマンド：nohup python3 -u result_notification_background.py > result_notification_background.log 2>&1 &
 
-
-from ast import While
-from selenium import webdriver
 from time import sleep
-from selenium.webdriver.chrome.options import Options
-import requests,bs4
-from rich import print,logging,pretty,inspect
+import bs4
+from rich import print,pretty,inspect
 from rich.console import Console
-import logging
-from rich.logging import RichHandler
-from fastapi import FastAPI, Body
 import time 
 import websocket
+from selenium import webdriver
 
 import format_result_race
 import format_result_nar_race
@@ -21,25 +15,32 @@ import format_result_nar_race
 console = Console()
 pretty.install()
 #chomedriverのパスを指定
-executable_path="./chromedriver.exe"
+executable_path = '/usr/local/bin/chromedriver'
 #レース結果通知先のwebsocketサーバーのアドレスを指定
 ws_result_endpoint = "ws://localhost:8000/ws/result"
 
-def on_message(wsapp, message):
+def on_message(message):
     print(message)
 
 def main():
     result_raceID_list = []
     done_raceID_list = []
     result_raceID_dict = {}
-    options = Options()
-    options.add_argument('--headless')
+    options = webdriver.ChromeOptions()
+    options.binary_location = '/usr/bin/opera'
+    options.add_argument('--headless')  # ヘッドレスモードで起動
+    options.add_argument('--disable-gpu')  # GPUの無効化
+    options.add_argument('--no-sandbox')  # サンドボックスモードの無効化
+    options.add_argument('--disable-dev-shm-usage')  # 共有メモリの無効化
     try:
-        driver = webdriver.Chrome(executable_path=executable_path, options=options)
+        driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', options=options) #too slow
         while True:
             #data = await ws.receive_text()
-            driver.get('https://race.netkeiba.com/top/')
-            html = driver.page_source
+            try:
+                driver.get('https://race.netkeiba.com/top/')
+                html = driver.page_source
+            finally:
+                driver.quit()
             soup = bs4.BeautifulSoup(html, 'html.parser')
             result_state = soup.select_one('.Race_State').text
             print(result_state)
@@ -102,11 +103,12 @@ def main():
 
                 except:
                     continue
-            time.sleep(1)
+            time.sleep(60)
     except Exception as e:
         driver = webdriver.Chrome(executable_path=executable_path, options=options)
         console.log("LOG_DEBUG", '{}:{}'.format(type(e),e))
-        time.sleep(1)
+        time.sleep(60)
+
 
 if __name__ == "__main__":
     main()
