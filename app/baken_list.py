@@ -1,52 +1,29 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.firefox.service import Service
-from rich import print, pretty
-from rich.console import Console
 
-console = Console()
-pretty.install()
-# chromedriverのパスを指定
-executable_path = "./geckodriver"
-# service = Service(executable_path=executable_path)
-profile = webdriver.FirefoxProfile()
-# ブロックしたいURLを指定します
-blocked_sites = [
-    #ここにブロックするURLを追加
-            'https://ads.stickyadstv.com/',
-            'https://c.amazon-adsystem.com/',
-            'https://images.taboola.com/',
-            'https://imageproxy.as.criteo.net/',
-            'https://hk-wf.taboola.com/',
-            'https://gum.criteo.com/',
-            'https://s.adroll.com/',
-            'https://s0.2mdn.net',
-]
-# prefs.jsの設定を追加
-for site in blocked_sites:
-    profile.set_preference('network.websocket.blocked_onions', site)
-
-# Firefoxのオプションを設定
-options = Options()
-options.profile = profile
-options.add_argument('--headless')  # ヘッドレスモードで起動
-options.add_argument('--disable-gpu')  # GPUの無効化
-options.add_argument('--no-sandbox')  # サンドボックスモードの無効化
-options.add_argument('--disable-dev-shm-usage')  # 共有メモリの無効化
-
+options = webdriver.ChromeOptions()
+options.binary_location = '/usr/bin/opera' #ブラウザはOperaを使用
 
 def horse_list(url):
-    # このプロファイルでFirefoxを起動
-    # WebDriverの初期化
-    with webdriver.Firefox(executable_path=executable_path, options=options) as driver:
-    # with webdriver.Firefox(executable_path=executable_path, options=options) as driver:
-       # HTMLを取得
-        driver.get(url)
+
+    options.add_argument('--headless')  # ヘッドレスモードで起動
+    options.add_argument('--disable-gpu')  # GPUの無効化
+    options.add_argument('--no-sandbox')  # サンドボックスモードの無効化
+    options.add_argument('--disable-dev-shm-usage')  # 共有メモリの無効化
+
+    driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', options=options)
+    
+    try:
+        # driver.request_interceptor = interceptor
+        driver.get(url) #Too slow
+        driver.implicitly_wait(10)
+
         html = driver.page_source
+    finally:
+        driver.quit()
 
     # BeautifulSoupを使用してHTMLを解析
-    soup = BeautifulSoup(html, 'html.parser', from_encoding='UTF-8')
+    soup = BeautifulSoup(html, 'html.parser')
 
     # レースIDを取得
     race_id = url.split('=')[1]
