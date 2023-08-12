@@ -1,8 +1,10 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
 
+# 既存のオプションにプロキシ設定を追加
 options = webdriver.ChromeOptions()
-options.binary_location = '/usr/bin/opera' #ブラウザはOperaを使用
+options.binary_location = '/usr/bin/opera'
+
 
 def horse_list(url):
 
@@ -11,8 +13,10 @@ def horse_list(url):
     options.add_argument('--no-sandbox')  # サンドボックスモードの無効化
     options.add_argument('--disable-dev-shm-usage')  # 共有メモリの無効化
 
-    driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', options=options)
+    driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', options=options) #too slow
+    # ブロックするドメインを指定
     
+
     try:
         # driver.request_interceptor = interceptor
         driver.get(url) #Too slow
@@ -21,6 +25,7 @@ def horse_list(url):
         html = driver.page_source
     finally:
         driver.quit()
+        # subprocess.run(['killall', 'firefox']) #kill all firefox process
 
     # BeautifulSoupを使用してHTMLを解析
     soup = BeautifulSoup(html, 'html.parser')
@@ -39,9 +44,9 @@ def horse_list(url):
         columns = row.find_all('td')
         number = columns[1].text.strip()
         horse_name = columns[3].text.strip()
-        frame = int(columns[0].text.strip())
-        odds = float(columns[9].text.strip())
-        ninki = int(columns[10].text.strip())
+        frame = columns[0].text.strip()
+        odds = columns[9].text.strip()
+        ninki = columns[10].text.strip()
 
         result['main'][number] = {
             '馬名': horse_name,
