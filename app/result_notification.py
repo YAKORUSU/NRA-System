@@ -71,6 +71,7 @@ async def result_info(date:str):
     except:
         return "error"
     return race_list
+    # return date
 
 # 開催されるレースの一覧を取得するエンドポイント
 @app.get("/nar_race_list/{date}")
@@ -90,9 +91,9 @@ async def result_info(race_id:str):
 
 @app.get("/nar_baken/{race_id}") #race_idはレースID
 async def result_info(race_id:str):
-    url = f"https://nar.netkeiba.com/race/shutuba.html?race_id=={race_id}"
+    url = f"https://nar.netkeiba.com/race/shutuba.html?race_id={race_id}"
     # 使用する変換スクリプト｛baken_list.py}
-    return baken_list.nar_horse_list(url)
+    return baken_list.horse_list(url)
 
 @app.get("/synthesize/{textrequest}")
 async def synthesize_text(textrequest:str):
@@ -108,8 +109,8 @@ async def synthesize_text(textrequest:str):
             os.remove(os.path.join("/tmp", file))
             
     # Azure Cognitive Services Speech SDKの設定
-    speech_key = "278f4ba6837b4a299ab3502f778bf07d"
-    service_region = "eastasia"
+    speech_key = "bf96054782564855929f5aa5be44cd70"
+    service_region = "japanwest"
     audio_config = speechsdk.audio.AudioOutputConfig(use_default_speaker=True)
     
     # テキストをwavに変換
@@ -159,60 +160,3 @@ async def websocket_endpoint(ws: WebSocket):
         # 接続が切れた場合、当該クライアントを削除する
         del clients[key]
 
-'''
-options = Options()
-options.add_argument('--headless')
-driver = webdriver.Chrome(executable_path="C:/Users/takeyoshi_murakami/chromedriver.exe", options=options)
-
-result_raceID_list = []
-done_raceID_list = []
-while True:
-    try:
-        driver.get('https://www.netkeiba.com/')
-        html = driver.page_source
-        soup = bs4.BeautifulSoup(html, 'html.parser')
-    except:
-        print("ERROR: driver.get()")
-        driver = webdriver.Chrome(executable_path="C:/Users/takeyoshi_murakami/chromedriver.exe", options=options)
-        sleep(10)
-        continue
-    for data in soup.find_all(class_ = "ResultFlash01 flash_item"):
-        try:
-            #aタグの中にあるhref属性を取得
-            href = data.find('a').get('href')
-            #地方競馬の場合は処理を中断する
-            """
-            if "nar" in href:
-                continue
-            """
-            #hrefのrace_idを取得
-            race_id = href.split("race_id=")[-1]
-            result_raceID_list.append(race_id)
-        except:
-            pass
-    #result_raceID_listの重複を取り除く
-    result_raceID_list = list(set(result_raceID_list))
-    for race_id in result_raceID_list:
-        #通知済みrace_idか判断し、通知済みの場合何もしない
-        if race_id in done_raceID_list:
-            result_raceID_list.remove(race_id)
-            continue
-        try:
-            result_url = f"https://nar.netkeiba.com/race/result.html?race_id={race_id}&rf=race_submenu"
-            driver.get(result_url)
-            html = driver.page_source
-            result_soup = bs4.BeautifulSoup(html, 'html.parser')
-            #レース結果が確定してから表示されるまで時間がかかるため、確定情報がない場合はスキップする
-            #Race_Infomation_Boxがある場合は表示されない
-            RaceInfoBox = result_soup.find_all(class_ = "Race_Infomation_Box")
-            if len(RaceInfoBox) != 0:
-                continue
-            result = RaceInfoBox = result_soup.find_all(class_ = "ResultTableWrap")
-            console.log(result)
-            result_raceID_list.remove(race_id)
-            done_raceID_list.append(race_id)
-        except:
-            continue
-    print(result_raceID_list)
-    sleep(60)
-'''
