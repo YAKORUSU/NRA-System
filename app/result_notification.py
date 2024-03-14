@@ -109,7 +109,7 @@ async def synthesize_text(textrequest:str):
             os.remove(os.path.join("/tmp", file))
             
     # Azure Cognitive Services Speech SDKの設定
-    speech_key = "bf96054782564855929f5aa5be44cd70"
+    speech_key = "{API_key}"
     service_region = "japanwest"
     audio_config = speechsdk.audio.AudioOutputConfig(use_default_speaker=True)
     
